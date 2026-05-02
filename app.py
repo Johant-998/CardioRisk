@@ -497,7 +497,7 @@ with tab1:
             bg = BG_COLORS.get(val, "#F4F6F8")
             return f'background-color:{bg};color:{c};font-weight:500;border-radius:20px;padding:3px 10px;font-size:0.75rem'
 
-        styled = avg.style.applymap(color_nivel, subset=["Nivel"]).format({
+        styled = avg.style.map(color_nivel, subset=["Nivel"]).format({
             "Edad": "{:.1f}", "Presión": "{:.1f}",
             "Colesterol": "{:.1f}", "FC máx": "{:.1f}"
         }).set_properties(**{
