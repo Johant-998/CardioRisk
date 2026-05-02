@@ -58,16 +58,19 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
 .cardio-header h1 {
     font-family: 'DM Serif Display', Georgia, serif;
     font-size: 2.2rem;
-    color: white;
+    color: white !important;
     margin: 0;
     letter-spacing: -0.5px;
     line-height: 1.1;
 }
 .cardio-header p {
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.85) !important;
     font-size: 0.9rem;
     margin: 6px 0 0;
     font-weight: 300;
+}
+.cardio-header * {
+    color: white !important;
 }
 .header-icon {
     font-size: 3rem;
@@ -346,7 +349,7 @@ st.markdown("""
   <div>
     <h1>CardioRisk</h1>
     <p>Sistema de diagnóstico cardiovascular · Heart Disease UCI Dataset · Kaggle</p>
-    <span class="header-badge">🟢 &nbsp;Especialización Diseño e IA · 2025</span>
+    <span class="header-badge">🟢 &nbsp;Especialización Diseño e IA · 2026</span>
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -648,6 +651,6 @@ st.markdown("""
 <div class="footer-bar">
     <span>Dataset: Heart Disease UCI · Kaggle · 303 pacientes · 14 variables</span>
     <span class="footer-pill">⚕ Algoritmo académico — no uso clínico</span>
-    <span>Especialización Diseño e IA · 2025</span>
+    <span>Especialización Diseño e IA · 2026</span>
 </div>
 """, unsafe_allow_html=True)
