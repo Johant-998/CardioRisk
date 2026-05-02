@@ -208,6 +208,26 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
     margin-bottom: 1.5rem;
 }
 
+/* Fondo blanco global — override tema oscuro de Streamlit */
+html, body,
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stMain"],
+[data-testid="block-container"],
+.main, .block-container {
+    background-color: #F4F6F8 !important;
+    color: #0D1B2A !important;
+}
+[data-testid="stHeader"] { background-color: #F4F6F8 !important; }
+
+/* Textos Streamlit con contraste */
+p, span, label, div, h1, h2, h3, h4, h5, h6,
+.stMarkdown, .stText { color: #0D1B2A !important; }
+[data-testid="stSliderLabel"], .stSlider label { color: #4A5568 !important; }
+.stRadio label { color: #4A5568 !important; }
+[data-baseweb="tab"] { color: #4A5568 !important; }
+[data-baseweb="tab"][aria-selected="true"] { color: #1A6B8A !important; }
+
 /* Ocultar elementos Streamlit */
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { padding-top: 1.5rem; padding-bottom: 0; }
@@ -595,30 +615,32 @@ with tab2:
             )
             st.plotly_chart(fig_gauge, use_container_width=True)
 
-            # Desglose if/elif/else
+            # Desglose if/elif/else — usando componentes nativos Streamlit
             st.markdown("**Desglose del algoritmo** `if / elif / else`")
-            rows_html = ""
+
+            breakdown_html = '<div style="background:white;border:1px solid rgba(0,0,0,0.08);border-radius:12px;padding:1rem 1.25rem;margin-top:4px">'
             for nombre, pts, maximo in steps:
                 pct = int(pts / maximo * 100) if maximo > 0 else 0
-                bar_color = color if pts > 0 else "#E2E8F0"
-                rows_html += f"""
-                <div class="step-row">
-                    <span class="step-name">{nombre}</span>
-                    <div style="width:80px;height:5px;background:#EEF1F5;border-radius:3px;overflow:hidden">
-                        <div style="width:{pct}%;height:100%;background:{bar_color};border-radius:3px"></div>
-                    </div>
-                    <span class="step-pts" style="color:{''+color if pts>0 else '#8A97A8'}">+{pts}</span>
-                </div>"""
-            st.markdown(f"""
-            <div style="background:white;border:1px solid rgba(0,0,0,0.07);border-radius:12px;padding:1rem 1.25rem">
-                {rows_html}
-                <div style="display:flex;justify-content:space-between;padding:10px 0 0;
-                            font-size:0.85rem;font-weight:500;color:#0D1B2A;
-                            border-top:1px solid rgba(0,0,0,0.1);margin-top:6px">
-                    <span>Total de puntos</span><span>{puntos} / 12</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+                bar_col = color if pts > 0 else "#E2E8F0"
+                pts_col = color if pts > 0 else "#8A97A8"
+                breakdown_html += (
+                    '<div style="display:flex;align-items:center;gap:10px;'
+                    'padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.06)">'
+                    f'<span style="flex:1;font-size:0.82rem;color:#4A5568">{nombre}</span>'
+                    '<div style="width:80px;height:5px;background:#EEF1F5;border-radius:3px;overflow:hidden">'
+                    f'<div style="width:{pct}%;height:100%;background:{bar_col};border-radius:3px"></div>'
+                    '</div>'
+                    f'<span style="font-size:0.82rem;font-weight:500;color:{pts_col};min-width:28px;text-align:right">+{pts}</span>'
+                    '</div>'
+                )
+            breakdown_html += (
+                '<div style="display:flex;justify-content:space-between;'
+                'padding:10px 0 0;font-size:0.85rem;font-weight:500;color:#0D1B2A;'
+                'border-top:1px solid rgba(0,0,0,0.1);margin-top:4px">'
+                f'<span>Total de puntos</span><span>{puntos} / 12</span>'
+                '</div></div>'
+            )
+            st.markdown(breakdown_html, unsafe_allow_html=True)
 
 
 # ── Footer ─────────────────────────────────────────────────
