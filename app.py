@@ -515,22 +515,55 @@ with tab1:
                .mean().round(1).reindex(orden).reset_index())
         avg.columns = ["Nivel", "Edad", "Presión", "Colesterol", "FC máx"]
 
-        def color_nivel(val):
-            c = TEXT_COLORS.get(val, "#4A5568")
-            bg = BG_COLORS.get(val, "#F4F6F8")
-            return f'background-color:{bg};color:{c};font-weight:500;border-radius:20px;padding:3px 10px;font-size:0.75rem'
+        PILL_STYLES = {
+            "BAJO":     f"background:{BG_COLORS['BAJO']};color:{TEXT_COLORS['BAJO']}",
+            "MODERADO": f"background:{BG_COLORS['MODERADO']};color:{TEXT_COLORS['MODERADO']}",
+            "ALTO":     f"background:{BG_COLORS['ALTO']};color:{TEXT_COLORS['ALTO']}",
+            "CRÍTICO":  f"background:{BG_COLORS['CRÍTICO']};color:{TEXT_COLORS['CRÍTICO']}",
+        }
 
-        styled = avg.style.map(color_nivel, subset=["Nivel"]).format({
-            "Edad": "{:.1f}", "Presión": "{:.1f}",
-            "Colesterol": "{:.1f}", "FC máx": "{:.1f}"
-        }).set_properties(**{
-            "font-size": "13px", "color": "#4A5568"
-        }).set_table_styles([
-            {"selector": "th", "props": [("font-size", "11px"), ("color", "#8A97A8"),
-                                          ("font-weight", "500"), ("text-transform", "uppercase"),
-                                          ("letter-spacing", "0.06em")]}
-        ])
-        st.dataframe(styled, use_container_width=True, hide_index=True)
+        th_style = (
+            "background:#F8FAFB;color:#8A97A8;font-size:11px;font-weight:500;"
+            "text-transform:uppercase;letter-spacing:0.06em;padding:8px 12px;"
+            "border-bottom:1px solid #E2E8F0;text-align:left"
+        )
+        td_style = (
+            "color:#4A5568;font-size:12px;padding:9px 12px;"
+            "border-bottom:1px solid #EEF1F5;text-align:right;"
+            "font-variant-numeric:tabular-nums"
+        )
+
+        rows_html = ""
+        for _, row in avg.iterrows():
+            nivel = row["Nivel"]
+            pill = PILL_STYLES.get(nivel, "background:#F4F6F8;color:#4A5568")
+            rows_html += (
+                "<tr>"
+                f'<td style="{td_style};text-align:left">'
+                f'<span style="{pill};font-size:10px;font-weight:500;'
+                f'padding:3px 10px;border-radius:20px;white-space:nowrap">'
+                f'{nivel}</span></td>'
+                f'<td style="{td_style}">{row["Edad"]}</td>'
+                f'<td style="{td_style}">{row["Presión"]}</td>'
+                f'<td style="{td_style}">{row["Colesterol"]}</td>'
+                f'<td style="{td_style};border-right:none">{row["FC máx"]}</td>'
+                "</tr>"
+            )
+
+        table_html = (
+            '<table style="width:100%;border-collapse:collapse;background:white;'
+            'border:1px solid #E2E8F0;border-radius:10px;overflow:hidden">'
+            "<thead><tr>"
+            f'<th style="{th_style}">Nivel</th>'
+            f'<th style="{th_style};text-align:right">Edad</th>'
+            f'<th style="{th_style};text-align:right">Presión</th>'
+            f'<th style="{th_style};text-align:right">Colesterol</th>'
+            f'<th style="{th_style};text-align:right">FC máx</th>'
+            "</tr></thead>"
+            f"<tbody>{rows_html}</tbody>"
+            "</table>"
+        )
+        st.markdown(table_html, unsafe_allow_html=True)
 
 
 # ══════════════════════════════════════════════════════════════
